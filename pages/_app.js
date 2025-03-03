@@ -1,9 +1,8 @@
 import "../styles/globals.css";
-import type { AppProps } from "next/app";
 import Link from "next/link";
 import React from "react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }) {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Navbar */}
