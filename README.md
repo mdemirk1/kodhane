@@ -1,1 +1,0 @@
-# KodHane - Türkçe Kodlama Platformu
