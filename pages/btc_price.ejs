@@ -1,0 +1,118 @@
+<%- include("header.ejs") %>
+
+
+<div class="row">
+  <div class="col-10 order-header-wrapper">
+    <div class="order-header">
+      <p class="order-header-id">ID</p>
+      <p class="order-header-amount">Amount</p>
+      <p class="order-header-wallet">Wallet Address</p>
+      <hr class="rounded order-divider">
+    </div>
+    <%for(var i = 0; i < items.length-1; i+=2) {%>
+      <div class="order-items">
+        <p class="order-id"><%= i+1 %></p>
+        <p class="order-amount"><%= items[i] %> BTC</p>
+        <p class="order-address"><%= items[i+1] %> </p>
+        <input type="checkbox" class="order-checkbox">
+      </div>
+      <hr class="rounded order-divider">
+      <%}%>
+  </div>
+  <div class="col-2 market-divider-wrapper">
+    <div class="markets-divider">
+      <div class="markets-items">
+        <div class="p-1">BTC MARKETS</div>
+        <div class="market-prices" id="btc-price-usd"></div>
+        <p class="currency-names">USD</p>
+        <hr>
+        <div class="market-prices" id="btc-price-eur"></div>
+        <p class="currency-names">EUR</p>
+        <hr>
+        <div class="market-prices" id="btc-price-try"></div>
+        <p class="currency-names">TRY</p>
+        <hr>
+      </div>
+      <script>
+        // Create WebSocket connection.
+        // Using WebSocket api from MDN (mozilla)
+        const socket = new WebSocket("wss://stream.binance.com:9443/stream?streams=btctry@trade/btcusdt@trade/btceur@trade");
+        var btcPriceElementTry = document.getElementById("btc-price-try");
+        var btcPriceElementUsdt = document.getElementById("btc-price-usd");
+        var btcPriceElementEur = document.getElementById("btc-price-eur");
+        var lastPriceTry = null;
+        var lastPriceUsdt = null;
+        var lastPriceEur = null;
+        socket.addEventListener('message', function (event) {
+          var jsonEvent = JSON.parse(event.data);
+          // console.log('Message from server ', jsonEvent);
+          if(jsonEvent.stream == "btctry@trade") {
+            var jsonDataTry = jsonEvent.data;
+            var btcPriceTryRaw = Math.round(jsonDataTry.p);
+            var btcPriceTry = Math.round(jsonDataTry.p);
+            if(lastPriceTry > btcPriceTryRaw) {
+              btcPriceElementTry.innerText = btcPriceTry;
+              btcPriceElementTry.style.color = "red";
+              lastPriceTry = btcPriceTryRaw;
+            }
+            else if(btcPriceTryRaw > lastPriceTry) {
+              btcPriceElementTry.innerText = btcPriceTry;
+              btcPriceElementTry.style.color = "green";
+              lastPriceTry = btcPriceTryRaw;
+            }
+            else {
+              btcPriceElementTry.innerText = btcPriceTry;
+              btcPriceElementTry.style.color = "black";
+              lastPriceTry = btcPriceTryRaw;
+            }
+            
+          }
+          else if(jsonEvent.stream == "btcusdt@trade") {
+            var jsonDataUsdt = jsonEvent.data;
+            var btcPriceUsdtRaw = Math.round(jsonDataUsdt.p);
+            var btcPriceUsdt = Math.round(jsonDataUsdt.p);
+            if(lastPriceUsdt > btcPriceUsdtRaw) {
+              btcPriceElementUsdt.innerText = btcPriceUsdt;
+              btcPriceElementUsdt.style.color = "red";
+              lastPriceUsdt = btcPriceUsdtRaw;
+            }
+            else if(btcPriceUsdtRaw > lastPriceUsdt) {
+              btcPriceElementUsdt.innerText = btcPriceUsdt;
+              btcPriceElementUsdt.style.color = "green";
+              lastPriceUsdt = btcPriceUsdtRaw;
+            }
+            else {
+              btcPriceElementUsdt.innerText = btcPriceUsdt;
+              btcPriceElementUsdt.style.color = "black";
+              lastPriceUsdt = btcPriceUsdtRaw;
+            }
+          }
+          else if(jsonEvent.stream == "btceur@trade") {
+            var jsonDataEur = jsonEvent.data;
+            var btcPriceEurRaw = Math.round(jsonDataEur.p);
+            var btcPriceEur = Math.round(jsonDataEur.p);
+            if(lastPriceEur > btcPriceEurRaw) {
+              btcPriceElementEur.innerText = btcPriceEur;
+              btcPriceElementEur.style.color = "red";
+              lastPriceEur = btcPriceEurRaw;
+            }
+            else if(btcPriceEurRaw > lastPriceEur) {
+              btcPriceElementEur.innerText = btcPriceEur;
+              btcPriceElementEur.style.color = "green";
+              lastPriceEur = btcPriceEurRaw;
+            }
+            else {
+              btcPriceElementEur.innerText = btcPriceEur;
+              btcPriceElementEur.style.color = "black";
+              lastPriceEur = btcPriceEurRaw;
+            }
+          }
+        });
+      </script>
+    </div>
+  </div>
+</div>
+
+
+
+<%- include("footer.ejs") %>
